@@ -27,6 +27,7 @@ dmx.Component('mobile-input', {
     disabled: { type: Boolean, default: false },
     readonly: { type: Boolean, default: false },
     required: { type: Boolean, default: false },
+    value: { type: String, default: '' },
     validation_error_map: { type: String, default: '' },
     utilsScript: { type: String, default: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/js/utils.js' }
   },
@@ -129,6 +130,7 @@ dmx.Component('mobile-input', {
   },
 
   initializeInput: function () {
+    
     const self = this;
     const options = this.props;
     
@@ -141,6 +143,11 @@ dmx.Component('mobile-input', {
     }
     
     // Create the input HTML - without including validation feedback div initially
+    // Check if the parent node has dmx-bind:value attribute
+    const hasValueBinding = this.$node.hasAttribute('dmx-bind:value');
+    const valueBindingAttr = hasValueBinding ? 
+      `dmx-bind:value="${this.$node.getAttribute('dmx-bind:value')}"` : '';
+    
     this.$node.innerHTML = `
       <div class="mobile-input-container ${options.container_class}">
         <input 
@@ -148,10 +155,10 @@ dmx.Component('mobile-input', {
           id="${options.id}" 
           class="${options.input_class} ${options.custom_class}"
           placeholder="${options.placeholder}"
-          value="9876789876"
           ${options.disabled ? 'disabled' : ''}
           ${options.readonly ? 'readonly' : ''}
           ${options.required ? 'required' : ''}
+          ${valueBindingAttr}
         />
       </div>
     `;
@@ -170,6 +177,17 @@ dmx.Component('mobile-input', {
   },
   
   setupIntlTelInput: function(input, options, self) {
+    // Add data binding listener for dmx-bind:value changes
+    if (input.hasAttribute('dmx-bind:value')) {
+      const valueBinding = input.getAttribute('dmx-bind:value');
+      // Set up a watch for this binding
+      this.$watch(valueBinding, (value) => {
+        if (this.iti && value !== undefined) {
+          this.iti.setNumber(value);
+        }
+      });
+    }
+    
     // Find parent form and attach submit event handler to log form submission
     const parentForm = input.closest('form');
     if (parentForm) {
@@ -369,6 +387,10 @@ dmx.Component('mobile-input', {
     // Initialize intl-tel-input
     this.iti = window.intlTelInput(input, itiOptions);
     
+    // Set initial value if provided
+    if (options.value) {
+      this.iti.setNumber(options.value);
+    }
     
     // Add specific handler for the target validation div
     if (options.id === 'suppmobileinput1' || input.id === 'suppmobileinput1') {
@@ -510,6 +532,14 @@ dmx.Component('mobile-input', {
         // Restore cursor position, adjusted for removed characters
         const posDiff = input.value.length - e.target.value.length;
         input.setSelectionRange(cursorPos + posDiff, cursorPos + posDiff);
+      }
+      
+      // If the input has a dmx-bind:value attribute, update the component's value prop
+      if (input.hasAttribute('dmx-bind:value')) {
+        const internationalNumber = self.iti.getNumber();
+        dmx.nextTick(function () {
+          self.set('value', internationalNumber);
+        }, self);
       }
       
       // Limit to maximum of 15 digits (E.164 standard maximum)
@@ -792,6 +822,13 @@ dmx.Component('mobile-input', {
       const input = this.$node.querySelector('input');
       if (input) {
         input.readOnly = props.readonly;
+      }
+    }
+    
+    if (!dmx.equal(this.props.value, props.value)) {
+      const input = this.$node.querySelector('input');
+      if (input && this.iti) {
+        this.iti.setNumber(this.props.value);
       }
     }
   },
