@@ -1,0 +1,498 @@
+{
+  "components": [
+    {
+      "type": "dmx-mobile-input",
+      "selector": "dmx-mobile-input, [is=dmx-mobile-input]",
+      "groupTitle": "Form Elements",
+      "groupIcon": "fa fa-lg fa-pencil",
+      "title": "Mobile Input: @@id@@",
+      "icon": "fa fa-lg fa-pencil",
+      "state": "opened",
+      "anyParent": true,
+      "template": "<dmx-mobile-input id=\"@@id@@\"></dmx-mobile-input>",
+      "baseName": "mobileinput",
+      "help": "International phone number input with country code selection and validation",
+      "dataScheme": [
+        {
+          "name": "phone_number",
+          "title": "Phone Number",
+          "type": "text"
+        },
+        {
+          "name": "country_code",
+          "title": "Country Code",
+          "type": "text"
+        },
+        {
+          "name": "full_number",
+          "title": "Full Number",
+          "type": "text"
+        },
+        {
+          "name": "is_valid",
+          "title": "Is Valid",
+          "type": "boolean"
+        }
+      ],
+      "outputType": "object",
+      "dataPick": true,
+      "properties": [
+        {
+          "group": "General Properties",
+          "variables": [
+            {
+              "name": "id",
+              "attribute": "id",
+              "title": "ID",
+              "type": "text",
+              "required": true,
+              "help": "Unique ID for the mobile input field"
+            },
+            {
+              "name": "placeholder",
+              "attribute": "placeholder",
+              "title": "Placeholder",
+              "type": "text",
+              "defaultValue": "Enter phone number",
+              "help": "Placeholder text for the input field"
+            },
+            {
+              "name": "inputClass",
+              "attribute": "input_class",
+              "title": "Input Class",
+              "type": "text",
+              "defaultValue": "form-control",
+              "help": "CSS classes for the input element"
+            },
+            {
+              "name": "customClass",
+              "attribute": "custom_class",
+              "title": "Custom Class",
+              "type": "text",
+              "defaultValue": "",
+              "help": "Additional custom CSS classes"
+            },
+            {
+              "name": "containerClass",
+              "attribute": "container_class",
+              "title": "Container Class",
+              "type": "text",
+              "defaultValue": "",
+              "help": "CSS classes for the container element"
+            }
+          ]
+        },
+        {
+          "group": "Country Settings",
+          "variables": [
+            {
+              "name": "initialCountry",
+              "attribute": "initial_country",
+              "title": "Initial Country",
+              "type": "text",
+              "defaultValue": "us",
+              "dataBindings": true,
+              "help": "Default country to be selected (ISO 3166-1 alpha-2 country code)"
+            },
+            {
+              "name": "preferredCountries",
+              "attribute": "preferred_countries",
+              "title": "Preferred Countries",
+              "type": "text",
+              "defaultValue": "",
+              "dataBindings": true,
+              "help": "Comma-separated list of preferred countries (e.g., 'us,gb,ca')"
+            },
+            {
+              "name": "onlyCountries",
+              "attribute": "only_countries",
+              "title": "Only Countries",
+              "type": "text",
+              "defaultValue": "",
+              "dataBindings": true,
+              "help": "Comma-separated list of countries to display only (e.g., 'us,gb,ca')"
+            },
+            {
+              "name": "excludeCountries",
+              "attribute": "exclude_countries",
+              "title": "Exclude Countries",
+              "type": "text",
+              "defaultValue": "",
+              "dataBindings": true,
+              "help": "Comma-separated list of countries to exclude (e.g., 'af,ac')"
+            }
+          ]
+        },
+        {
+          "group": "Display Options",
+          "variables": [
+            {
+              "name": "separateDialCode",
+              "attribute": "separate_dial_code",
+              "title": "Separate Dial Code",
+              "type": "boolean",
+              "defaultValue": false,
+              "help": "Display the country dial code next to the selected flag"
+            },
+            {
+              "name": "showSelectedDialCode",
+              "attribute": "show_selected_dial_code",
+              "title": "Show Selected Dial Code",
+              "type": "boolean",
+              "defaultValue": false,
+              "help": "Show the selected country dial code in the input"
+            },
+            {
+              "name": "allowDropdown",
+              "attribute": "allow_dropdown",
+              "title": "Allow Dropdown",
+              "type": "boolean",
+              "defaultValue": true,
+              "help": "Whether to allow the dropdown to select countries"
+            },
+            {
+              "name": "nationalMode",
+              "attribute": "national_mode",
+              "title": "National Mode",
+              "type": "boolean",
+              "defaultValue": true,
+              "help": "Format numbers in national format instead of international"
+            },
+            {
+              "name": "formatOnDisplay",
+              "attribute": "format_on_display",
+              "title": "Format On Display",
+              "type": "boolean",
+              "defaultValue": true,
+              "help": "Format the number as the user types"
+            },
+            {
+              "name": "useFullScreenPopup",
+              "attribute": "use_full_screen_popup",
+              "title": "Use Full Screen Popup",
+              "type": "boolean",
+              "defaultValue": true,
+              "help": "Use a full screen popup for country selection on mobile devices"
+            },
+            {
+              "name": "autoPlaceholder",
+              "attribute": "auto_placeholder",
+              "title": "Auto Placeholder",
+              "type": "droplist",
+              "defaultValue": "polite",
+              "values": [
+                { "title": "Aggressive", "value": "aggressive" },
+                { "title": "Polite", "value": "polite" },
+                { "title": "Off", "value": "off" }
+              ],
+              "help": "Set the placeholder to an example number for the selected country"
+            }
+          ]
+        },
+        {
+          "group": "Input States",
+          "variables": [
+            {
+              "name": "disabled",
+              "attribute": "disabled",
+              "title": "Disabled",
+              "type": "boolean",
+              "defaultValue": false,
+              "help": "Whether the input is disabled"
+            },
+            {
+              "name": "readonly",
+              "attribute": "readonly",
+              "title": "Read Only",
+              "type": "boolean",
+              "defaultValue": false,
+              "help": "Whether the input is read-only"
+            },
+            {
+              "name": "required",
+              "attribute": "required",
+              "title": "Required",
+              "type": "boolean",
+              "defaultValue": false,
+              "help": "Whether the input is required"
+            }
+          ]
+        },
+        {
+          "group": "Advanced Settings",
+          "variables": [
+            {
+              "name": "utilsScript",
+              "attribute": "utilsScript",
+              "title": "Utils Script URL",
+              "type": "text",
+              "defaultValue": "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/js/utils.js",
+              "help": "URL for the intl-tel-input utils script"
+            },
+            {
+              "name": "validationErrorMap",
+              "attribute": "validation_error_map",
+              "title": "Validation Error Map",
+              "type": "text",
+              "defaultValue": "",
+              "help": "JSON object mapping error codes to custom error messages"
+            }
+          ]
+        }
+      ],
+      "actionsScheme": [
+        {
+          "addTitle": "Get Number",
+          "title": "Get Number",
+          "name": "getNumber",
+          "icon": "fa fa-lg fa-phone",
+          "state": "opened",
+          "help": "Get the formatted phone number",
+          "properties": []
+        },
+        {
+          "addTitle": "Set Country",
+          "title": "Set Country",
+          "name": "setCountry",
+          "icon": "fa fa-lg fa-flag",
+          "state": "opened",
+          "help": "Set the selected country",
+          "properties": [
+            {
+              "name": "countryCode",
+              "title": "Country Code",
+              "type": "text",
+              "help": "ISO 3166-1 alpha-2 country code"
+            }
+          ]
+        },
+        {
+          "addTitle": "Set Number",
+          "title": "Set Number",
+          "name": "setNumber",
+          "icon": "fa fa-lg fa-edit",
+          "state": "opened",
+          "help": "Set the phone number",
+          "properties": [
+            {
+              "name": "number",
+              "title": "Phone Number",
+              "type": "text",
+              "help": "Phone number to set"
+            }
+          ]
+        }
+      ],
+      "children": [],
+      "allowed_children": {},
+      "copyFiles": [
+        {
+          "src": "dmx-mobile-input.js",
+          "dst": "js/dmx-mobile-input.js"
+        },
+        {
+          "src": "mobile-input.css",
+          "dst": "css/mobile-input.css"
+        }
+      ],
+      "linkFiles": [
+        {
+          "src": "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/css/intlTelInput.css",
+          "type": "css",
+          "order": 1
+        },
+        {
+          "src": "css/mobile-input.css",
+          "type": "css",
+          "order": 2
+        },
+        {
+          "src": "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/js/intlTelInput.min.js",
+          "type": "js",
+          "order": 1
+        },
+        {
+          "src": "js/dmx-mobile-input.js",
+          "type": "js",
+          "order": 2,
+          "defer": true
+        }
+      ]
+    }
+  ],
+    "attributes": [
+    {
+      "name": "dmx-mobile-input-disabled",
+      "attributeStartsWith": "dmx-bind",
+      "attribute": "disabled",
+      "title": "Disabled",
+      "type": "boolean",
+      "display": "fieldset",
+      "icon": "fa fa-lg fa-chevron-right",
+      "groupTitle": "Input State",
+      "groupIcon": "fa fa-lg fa-cubes",
+      "defaultValue": false,
+      "show": [
+        "disabledCondition"
+      ],
+      "noChangeOnHide": true,
+      "groupEnabler": true,
+      "children": [
+        {
+          "name": "disabledCondition",
+          "attributeStartsWith": "dmx-bind",
+          "attribute": "disabled",
+          "isValue": true,
+          "dataBindings": true,
+          "title": "Disabled Condition:",
+          "type": "text",
+          "help": "Condition to disable the input",
+          "defaultValue": "",
+          "initDisplay": "none"
+        }
+      ],
+      "allowedOn": {
+        "dmx-mobile-input": true
+      }
+    },
+    {
+      "name": "dmx-mobile-input-readonly",
+      "attributeStartsWith": "dmx-bind",
+      "attribute": "readonly",
+      "title": "Read Only",
+      "type": "boolean",
+      "display": "fieldset",
+      "icon": "fa fa-lg fa-chevron-right",
+      "groupTitle": "Input State",
+      "groupIcon": "fa fa-lg fa-cubes",
+      "defaultValue": false,
+      "show": [
+        "readonlyCondition"
+      ],
+      "noChangeOnHide": true,
+      "groupEnabler": true,
+      "children": [
+        {
+          "name": "readonlyCondition",
+          "attributeStartsWith": "dmx-bind",
+          "attribute": "readonly",
+          "isValue": true,
+          "dataBindings": true,
+          "title": "Read Only Condition:",
+          "type": "text",
+          "help": "Condition to make the input read-only",
+          "defaultValue": "",
+          "initDisplay": "none"
+        }
+      ],
+      "allowedOn": {
+        "dmx-mobile-input": true
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "dmx-mobile-input-phone-input",
+      "attributeStartsWith": "dmx-on",
+      "attribute": "phone_input",
+      "display": "fieldset",
+      "title": "Phone Input",
+      "icon": "fa fa-lg fa-chevron-right",
+      "groupTitle": "Events",
+      "groupIcon": "fa fa-lg fa-cubes",
+      "defaultValue": false,
+      "show": [
+        "phoneInput"
+      ],
+      "noChangeOnHide": true,
+      "type": "boolean",
+      "groupEnabler": true,
+      "children": [
+        {
+          "name": "phoneInput",
+          "attributeStartsWith": "dmx-on",
+          "attribute": "phone_input",
+          "isValue": true,
+          "actionsPicker": true,
+          "title": "Action:",
+          "type": "text",
+          "help": "Action to execute when phone number is entered",
+          "defaultValue": "",
+          "initDisplay": "none"
+        }
+      ],
+      "allowedOn": {
+        "dmx-mobile-input": true
+      }
+    },
+    {
+      "name": "dmx-mobile-input-country-change",
+      "attributeStartsWith": "dmx-on",
+      "attribute": "country_change",
+      "display": "fieldset",
+      "title": "Country Change",
+      "icon": "fa fa-lg fa-chevron-right",
+      "groupTitle": "Events",
+      "groupIcon": "fa fa-lg fa-cubes",
+      "defaultValue": false,
+      "show": [
+        "countryChange"
+      ],
+      "noChangeOnHide": true,
+      "type": "boolean",
+      "groupEnabler": true,
+      "children": [
+        {
+          "name": "countryChange",
+          "attributeStartsWith": "dmx-on",
+          "attribute": "country_change",
+          "isValue": true,
+          "actionsPicker": true,
+          "title": "Action:",
+          "type": "text",
+          "help": "Action to execute when country is changed",
+          "defaultValue": "",
+          "initDisplay": "none"
+        }
+      ],
+      "allowedOn": {
+        "dmx-mobile-input": true
+      }
+    },
+    {
+      "name": "dmx-mobile-input-phone-blur",
+      "attributeStartsWith": "dmx-on",
+      "attribute": "phone_blur",
+      "display": "fieldset",
+      "title": "Phone Blur",
+      "icon": "fa fa-lg fa-chevron-right",
+      "groupTitle": "Events",
+      "groupIcon": "fa fa-lg fa-cubes",
+      "defaultValue": false,
+      "show": [
+        "phoneBlur"
+      ],
+      "noChangeOnHide": true,
+      "type": "boolean",
+      "groupEnabler": true,
+      "children": [
+        {
+          "name": "phoneBlur",
+          "attributeStartsWith": "dmx-on",
+          "attribute": "phone_blur",
+          "isValue": true,
+          "actionsPicker": true,
+          "title": "Action:",
+          "type": "text",
+          "help": "Action to execute when input loses focus",
+          "defaultValue": "",
+          "initDisplay": "none"
+        }
+      ],
+      "allowedOn": {
+        "dmx-mobile-input": true
+      }
+    }
+  ],
+  "static_events": []
+}

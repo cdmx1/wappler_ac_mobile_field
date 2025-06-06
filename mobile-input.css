@@ -1,0 +1,42 @@
+.mobile-input-container {
+  width: 100%;
+}
+
+.mobile-input-container .iti {
+  width: 100%;
+  display: block;
+}
+
+.mobile-input-container .iti input {
+  width: 100%;
+}
+
+
+.mobile-input-container .iti__selected-flag{
+    height: 36px !important;
+}
+
+/* .is-valid-field{
+    border-color: #00c292 !important;
+    background-image: none !important;
+    box-shadow: 0 0 0 0.25rem rgba(0, 194, 146, 0.25) !important;
+} */
+
+.is-valid{
+    border-color: #00c292 !important;
+    background-image: none !important;
+    box-shadow: 0 0 0 0.25rem rgba(0, 194, 146, 0.25) !important;
+}
+
+
+/* .is-invalid-field{
+    border-color: #e46a76 !important;
+    background-image: none !important;
+    box-shadow: 0 0 0 0.25rem rgba(228, 106, 118, 0.25) !important;
+} */
+
+.is-invalid{
+    border-color: #e46a76 !important;
+    background-image: none !important;
+    box-shadow: 0 0 0 0.25rem rgba(228, 106, 118, 0.25) !important;
+}

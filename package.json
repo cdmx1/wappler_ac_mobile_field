@@ -1,0 +1,29 @@
+{
+    "name": "@cdmx/wappler_ac_mobile_field",
+    "version": "0.0.1",
+    "type": "module",
+    "description": "App Connect module for International Mobile Phone Input with country code selection and validation",
+    "license": "MIT",
+    "author": {
+        "name": "cdmx1",
+        "url": "https://github.com/cdmx1"
+    },
+    "keywords": [
+        "wappler-extension",
+        "app-connect",
+        "mobile-field",
+        "phone-input",
+        "international-phone",
+        "country-code",
+        "validation",
+        "intl-tel-input"
+    ],
+    "scripts": {
+        "build": "rollup --config",
+        "publish-dry-run": "npm publish ./dist --access public --dry-run"
+    },
+    "dependencies": {},
+    "peerDependencies": {
+        "intl-tel-input": "^18.2.1"
+    }
+}
