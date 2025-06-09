@@ -115,6 +115,7 @@
               "title": "Preferred Countries",
               "type": "text",
               "defaultValue": "",
+              "dataBindings": true,
               "help": "Comma-separated list of preferred countries (e.g., 'us,gb,ca')"
             },
             {
@@ -123,6 +124,7 @@
               "title": "Only Countries",
               "type": "text",
               "defaultValue": "",
+              "dataBindings": true,
               "help": "Comma-separated list of countries to display only (e.g., 'us,gb,ca')"
             },
             {
@@ -131,6 +133,7 @@
               "title": "Exclude Countries",
               "type": "text",
               "defaultValue": "",
+              "dataBindings": true,
               "help": "Comma-separated list of countries to exclude (e.g., 'af,ac')"
             }
           ]
@@ -341,7 +344,7 @@
       "type": "boolean",
       "display": "fieldset",
       "icon": "fa fa-lg fa-chevron-right",
-      "groupTitle": "Input State",
+      "groupTitle": "Input",
       "groupIcon": "fa fa-lg fa-cubes",
       "defaultValue": false,
       "show": [
@@ -375,7 +378,7 @@
       "type": "boolean",
       "display": "fieldset",
       "icon": "fa fa-lg fa-chevron-right",
-      "groupTitle": "Input State",
+      "groupTitle": "Input",
       "groupIcon": "fa fa-lg fa-cubes",
       "defaultValue": false,
       "show": [

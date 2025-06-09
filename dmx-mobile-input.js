@@ -212,17 +212,10 @@ dmx.Component('mobile-input', {
           input.classList.add('is-invalid');
           input.classList.add('is-invalid-field');
           
-          // First check if we have the validation div from above
+          // Show validation message
           if (validationDiv) {
             validationDiv.textContent = "Invalid Number";
             validationDiv.style.display = 'block';
-          }
-          
-          // Special check for specific div - this is the one you specifically want to target
-          const specificValidationDiv = document.getElementById('dmxValidatorErrorf_add_suppmobileinput1');
-          if (specificValidationDiv) {
-            specificValidationDiv.textContent = "Invalid Number";
-            specificValidationDiv.style.display = 'block';
           }
         } else if (input.value) {
           // Valid input with value - add valid class
@@ -249,14 +242,7 @@ dmx.Component('mobile-input', {
             input.classList.add('is-invalid');
             input.classList.add('is-invalid-field');
             
-            // Try to find specific div first
-            const specificDiv = document.getElementById('dmxValidatorErrorf_add_suppmobileinput1');
-            if (specificDiv) {
-              specificDiv.textContent = "Invalid Number";
-              specificDiv.style.display = 'block';
-            }
-            
-            // Also try general validation div
+            // Check validation div
             const formId = parentForm.id || '';
             const validatorId = 'dmxValidatorError' + (formId ? formId : '') + options.id;
             let validationDiv = document.getElementById(validatorId);
@@ -277,12 +263,7 @@ dmx.Component('mobile-input', {
             input.classList.add('is-valid');
             input.classList.add('is-valid-field');
             
-            // Hide any validation messages
-            const specificDiv = document.getElementById('dmxValidatorErrorf_add_suppmobileinput1');
-            if (specificDiv) {
-              specificDiv.style.display = 'none';
-            }
-            
+            // Hide validation message
             const formId = parentForm.id || '';
             const validatorId = 'dmxValidatorError' + (formId ? formId : '') + options.id;
             let validationDiv = document.getElementById(validatorId);
@@ -303,22 +284,37 @@ dmx.Component('mobile-input', {
       const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
           if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+             console.log('submitted:');
             // When form class changes (might indicate submission or validation)
-            if (!self.iti.isValidNumber() && input.value) {
+            if (!input.value && options.required) {
+              // Empty required field
+              input.classList.remove('is-valid');
+              input.classList.remove('is-valid-field');
+              input.classList.add('is-invalid');
+              input.classList.add('is-invalid-field');
+              
+              // Show required field message
+              const formId = parentForm.id || '';
+              const validatorId = 'dmxValidatorError' + (formId ? formId : '') + options.id;
+              let validationDiv = document.getElementById(validatorId);
+              
+              if (!validationDiv) {
+                const alternativeId = 'dmxValidatorError' + options.id;
+                validationDiv = document.getElementById(alternativeId);
+              }
+              
+              if (validationDiv) {
+                validationDiv.textContent = "This field is required.";
+                validationDiv.style.display = 'block';
+              }
+            } else if (!self.iti.isValidNumber() && input.value) {
               // Add invalid class and remove valid class
               input.classList.remove('is-valid');
               input.classList.remove('is-valid-field');
               input.classList.add('is-invalid');
               input.classList.add('is-invalid-field');
               
-              // Check for specific div with ID "dmxValidatorErrorf_add_suppmobileinput1"
-              const specificDiv = document.getElementById('dmxValidatorErrorf_add_suppmobileinput1');
-              if (specificDiv) {
-                specificDiv.textContent = "Invalid Number";
-                specificDiv.style.display = 'block';
-              }
-              
-              // Also check for general validation div
+              // Check for validation div
               const formId = parentForm.id || '';
               const validatorId = 'dmxValidatorError' + (formId ? formId : '') + options.id;
               let validationDiv = document.getElementById(validatorId);
@@ -392,72 +388,7 @@ dmx.Component('mobile-input', {
       this.iti.setNumber(options.value);
     }
     
-    // Add specific handler for the target validation div
-    if (options.id === 'suppmobileinput1' || input.id === 'suppmobileinput1') {
-      
-      // Create a function to update the validation message
-      const updateValidationMessage = () => {
-        const specificDiv = document.getElementById('dmxValidatorErrorf_add_suppmobileinput1');
-        if (specificDiv) {
-          if (!self.iti.isValidNumber() && input.value) {
-            // Add invalid class and remove valid class
-            input.classList.remove('is-valid');
-            input.classList.remove('is-valid-field');
-            input.classList.add('is-invalid');
-            input.classList.add('is-invalid-field');
-            
-            specificDiv.textContent = "Invalid Number";
-            specificDiv.style.display = 'block';
-          } else if (input.value) {
-            // Valid input
-            input.classList.remove('is-invalid');
-            input.classList.remove('is-invalid-field');
-            input.classList.add('is-valid');
-            input.classList.add('is-valid-field');
-            
-            specificDiv.style.display = 'none';
-          }
-        }
-      };
-      
-      // Call function on initialization
-      setTimeout(updateValidationMessage, 500);
-      
-      // Call function when anything in the DOM changes
-      document.addEventListener('DOMSubtreeModified', function() {
-        updateValidationMessage();
-      });
-      
-      // Look for any form that might be submitting
-      document.addEventListener('submit', function(e) {
-        updateValidationMessage();
-      });
-      
-      // Create a global trigger that other code can call
-      window.updateMobileValidation = updateValidationMessage;
-      
-      // Add a dedicated observer for the specific validation div
-      setTimeout(() => {
-        const specificDiv = document.getElementById('dmxValidatorErrorf_add_suppmobileinput1');
-        if (specificDiv) {
-          const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-              // If div is visible but has no content, set the message
-              if (specificDiv.style.display === 'block' && !specificDiv.textContent.trim()) {
-                specificDiv.textContent = "Invalid Number";
-              }
-            });
-          });
-          
-          observer.observe(specificDiv, {
-            attributes: true,
-            childList: true,
-            characterData: true,
-            subtree: true
-          });
-        }
-      }, 500);
-    }
+    // No special handlers needed - using standard validation
     
     // Force flag refresh after initialization
     setTimeout(() => {
@@ -763,14 +694,7 @@ dmx.Component('mobile-input', {
           input.classList.remove('is-invalid-field');
           input.classList.remove('is-valid-field');
           
-          // Hide validation divs
-          const specificDiv = document.getElementById('dmxValidatorErrorf_add_suppmobileinput1');
-          if (specificDiv) {
-            specificDiv.style.display = 'none';
-            specificDiv.textContent = '';
-          }
-          
-          // Try both with and without form ID
+          // Try both with and without form ID for validation div
           let formId = '';
           let parent = input.closest('form');
           if (parent && parent.id) {
