@@ -284,7 +284,6 @@ dmx.Component('mobile-input', {
       const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
           if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-             console.log('submitted:');
             // When form class changes (might indicate submission or validation)
             if (!input.value && options.required) {
               // Empty required field
