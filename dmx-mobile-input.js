@@ -17,7 +17,7 @@ dmx.Component('mobile-input', {
     separate_dial_code: { type: Boolean, default: false },
     auto_placeholder: { type: String, default: 'polite' },
     national_mode: { type: Boolean, default: true },
-    format_on_display: { type: Boolean, default: true },
+    format_on_display: { type: Boolean, default: false }, // Changed to false to prevent auto-formatting
     use_full_screen_popup: { type: Boolean, default: true },
     show_selected_dial_code: { type: Boolean, default: false },
     allow_dropdown: { type: Boolean, default: true },
@@ -536,9 +536,11 @@ dmx.Component('mobile-input', {
       
       // If the input has a dmx-bind:value attribute, update the component's value prop
       if (input.hasAttribute('dmx-bind:value')) {
-        const internationalNumber = self.iti.getNumber();
+        // Instead of using the formatted international number, use the raw input value
+        // This keeps the number exactly as the user entered it
+        const rawNumber = input.value;
         dmx.nextTick(function () {
-          self.set('value', internationalNumber);
+          self.set('value', rawNumber);
         }, self);
       }
       
@@ -788,24 +790,6 @@ dmx.Component('mobile-input', {
             validationDiv.textContent = '';
           }
         }
-      });
-      
-      // Add event listeners for modal hide events (Bootstrap 5)
-      modal.addEventListener('hide.bs.modal', function() {
-      });
-      
-      modal.addEventListener('hidden.bs.modal', function() {
-        self.reset();
-      });
-      
-      // For Bootstrap 4 (duplicate listener, but keeping for compatibility)
-      modal.addEventListener('hidden.bs.modal', function() {
-        self.reset();
-      });
-      
-      // Generic fallback
-      modal.addEventListener('hidden', function() {
-        self.reset();
       });
     }
   },

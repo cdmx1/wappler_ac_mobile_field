@@ -3,10 +3,10 @@
     {
       "type": "dmx-mobile-input",
       "selector": "dmx-mobile-input, [is=dmx-mobile-input]",
-      "groupTitle": "Form Elements",
-      "groupIcon": "fa fa-lg fa-pencil",
+      "groupTitle": "Forms",
+      "groupIcon": "fa fa-lg fa-file-text-o",
       "title": "Mobile Input: @@id@@",
-      "icon": "fa fa-lg fa-pencil",
+      "icon": "fas fa-pencil-alt",
       "state": "opened",
       "anyParent": true,
       "template": "<dmx-mobile-input id=\"@@id@@\"></dmx-mobile-input>",
@@ -47,6 +47,21 @@
               "type": "text",
               "required": true,
               "help": "Unique ID for the mobile input field"
+            },
+            {
+              "name": "name",
+              "attribute": "name",
+              "title": "Name",
+              "type": "text",
+              "help": "Name attribute for the input field for form submissions"
+            },
+            {
+              "name": "value",
+              "attribute": "value",
+              "title": "Initial Value",
+              "type": "text",
+              "dataBindings": true,
+              "help": "Initial phone number value"
             },
             {
               "name": "placeholder",
@@ -100,7 +115,6 @@
               "title": "Preferred Countries",
               "type": "text",
               "defaultValue": "",
-              "dataBindings": true,
               "help": "Comma-separated list of preferred countries (e.g., 'us,gb,ca')"
             },
             {
@@ -109,7 +123,6 @@
               "title": "Only Countries",
               "type": "text",
               "defaultValue": "",
-              "dataBindings": true,
               "help": "Comma-separated list of countries to display only (e.g., 'us,gb,ca')"
             },
             {
@@ -118,7 +131,6 @@
               "title": "Exclude Countries",
               "type": "text",
               "defaultValue": "",
-              "dataBindings": true,
               "help": "Comma-separated list of countries to exclude (e.g., 'af,ac')"
             }
           ]
@@ -320,7 +332,7 @@
       ]
     }
   ],
-    "attributes": [
+            "attributes": [
     {
       "name": "dmx-mobile-input-disabled",
       "attributeStartsWith": "dmx-bind",
@@ -381,6 +393,40 @@
           "title": "Read Only Condition:",
           "type": "text",
           "help": "Condition to make the input read-only",
+          "defaultValue": "",
+          "initDisplay": "none"
+        }
+      ],
+      "allowedOn": {
+        "dmx-mobile-input": true
+      }
+    },
+    {
+      "name": "dmx-mobile-input-value",
+      "attributeStartsWith": "dmx-bind",
+      "attribute": "value",
+      "title": "value",
+      "type": "boolean",
+      "display": "fieldset",
+      "icon": "fa fa-lg fa-chevron-right",
+      "groupTitle": "Input",
+      "groupIcon": "fa fa-lg fa-cubes",
+      "defaultValue": false,
+      "show": [
+        "valueBinding"
+      ],
+      "noChangeOnHide": true,
+      "groupEnabler": true,
+      "children": [
+        {
+          "name": "valueBinding",
+          "attributeStartsWith": "dmx-bind",
+          "attribute": "value",
+          "isValue": true,
+          "dataBindings": true,
+          "title": "Value:",
+          "type": "text",
+          "help": "Binding for the phone number value",
           "defaultValue": "",
           "initDisplay": "none"
         }
