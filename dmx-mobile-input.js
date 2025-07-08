@@ -9,6 +9,7 @@ dmx.Component('mobile-input', {
 
   attributes: {
     id: { default: null },
+    name: { type: String, default: '' },
     placeholder: { type: String, default: 'Enter phone number' },
     initial_country: { type: String, default: 'us' },
     preferred_countries: { type: String, default: '' },
@@ -29,7 +30,9 @@ dmx.Component('mobile-input', {
     required: { type: Boolean, default: false },
     value: { type: String, default: '' },
     validation_error_map: { type: String, default: '' },
-    utilsScript: { type: String, default: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/js/utils.js' }
+    utilsScript: { type: String, default: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/js/utils.js' },
+    value_has_plus: { type: Boolean, default: false },
+    output_plus: { type: Boolean, default: false },
   },
 
   methods: {
@@ -102,7 +105,7 @@ dmx.Component('mobile-input', {
           let formId = '';
           let parent = input.closest('form');
           if (parent && parent.id) {
-            formId = parent.id;
+            formId = parent?.getAttribute('id') || '';
           }
           
           const validatorId = 'dmxValidatorError' + (formId ? formId : '') + this.props.id;
@@ -139,7 +142,7 @@ dmx.Component('mobile-input', {
     let formId = '';
     const parentForm = this.$node.closest('form');
     if (parentForm && parentForm.id) {
-      formId = parentForm.id;
+      formId = parentForm?.getAttribute('id');
     }
     
     // Create the input HTML - without including validation feedback div initially
@@ -152,7 +155,8 @@ dmx.Component('mobile-input', {
       <div class="mobile-input-container ${options.container_class}">
         <input 
           type="tel" 
-          id="${options.id}" 
+          id="${options.id}"
+          name="${options.name}"
           class="${options.input_class} ${options.custom_class}"
           placeholder="${options.placeholder}"
           ${options.disabled ? 'disabled' : ''}
@@ -163,39 +167,61 @@ dmx.Component('mobile-input', {
       </div>
     `;
 
+   const container = this.$node.querySelector('.mobile-input-container');
+const hiddenInput = document.createElement('input');
+hiddenInput.type = 'hidden';
+hiddenInput.name = options.name || 'mobile'; // Make this the real form value
+hiddenInput.id = `${options.id}_hidden`;
+container.appendChild(hiddenInput);
+this.hiddenInput = hiddenInput;
+
+const visibleInput = this.$node.querySelector('input[type="tel"]');
+visibleInput.removeAttribute('name');
+
     const input = this.$node.querySelector('input');
     
-    // Check if intl-tel-input library is loaded
+    
     if (typeof window.intlTelInput !== 'function') {
       return;
     }
     
-    // Initialize with a small delay to ensure everything is loaded
     setTimeout(() => {
       this.setupIntlTelInput(input, options, self);
     }, 100);
   },
   
   setupIntlTelInput: function(input, options, self) {
-    // Add data binding listener for dmx-bind:value changes
     if (input.hasAttribute('dmx-bind:value')) {
       const valueBinding = input.getAttribute('dmx-bind:value');
-      // Set up a watch for this binding
       this.$watch(valueBinding, (value) => {
         if (this.iti && value !== undefined) {
-          this.iti.setNumber(value);
+          let numberToSet = value;
+
+          if (options.value_has_plus === false && numberToSet && !numberToSet.startsWith('+')) {
+          numberToSet = '+' + numberToSet;
+          }
+
+          this.iti.setNumber(numberToSet);
+          const rawInternationalNumber = this.iti.getNumber(window.intlTelInputUtils.numberFormat.E164);
+          const finalInternationalNumber = options.output_plus
+            ? rawInternationalNumber
+            : rawInternationalNumber.replace(/^\+/, '');
+
+          if (this.hiddenInput) {
+            this.hiddenInput.value = finalInternationalNumber;
+          }
+
         }
       });
     }
     
-    // Find parent form and attach submit event handler to log form submission
     const parentForm = input.closest('form');
     if (parentForm) {
       // Method 1: Standard form submit event
       parentForm.addEventListener('submit', function(e) {
         // Instead of logging, directly update the validation div
         // For all mobile inputs
-        const formId = parentForm.id || '';
+        const formId = parentForm?.getAttribute('id') || '';
         const validatorId = 'dmxValidatorError' + (formId ? formId : '') + options.id;
         let validationDiv = document.getElementById(validatorId);
         
@@ -243,7 +269,7 @@ dmx.Component('mobile-input', {
             input.classList.add('is-invalid-field');
             
             // Check validation div
-            const formId = parentForm.id || '';
+            const formId = parentForm?.getAttribute('id') || '';
             const validatorId = 'dmxValidatorError' + (formId ? formId : '') + options.id;
             let validationDiv = document.getElementById(validatorId);
             
@@ -264,7 +290,7 @@ dmx.Component('mobile-input', {
             input.classList.add('is-valid-field');
             
             // Hide validation message
-            const formId = parentForm.id || '';
+            const formId = parentForm?.getAttribute('id') || '';
             const validatorId = 'dmxValidatorError' + (formId ? formId : '') + options.id;
             let validationDiv = document.getElementById(validatorId);
             
@@ -293,7 +319,7 @@ dmx.Component('mobile-input', {
               input.classList.add('is-invalid-field');
               
               // Show required field message
-              const formId = parentForm.id || '';
+              const formId = parentForm?.getAttribute('id') || '';
               const validatorId = 'dmxValidatorError' + (formId ? formId : '') + options.id;
               let validationDiv = document.getElementById(validatorId);
               
@@ -303,7 +329,7 @@ dmx.Component('mobile-input', {
               }
               
               if (validationDiv) {
-                validationDiv.textContent = "This field is required.";
+                validationDiv.textContent = "This field is required";
                 validationDiv.style.display = 'block';
               }
             } else if (!self.iti.isValidNumber() && input.value) {
@@ -314,7 +340,7 @@ dmx.Component('mobile-input', {
               input.classList.add('is-invalid-field');
               
               // Check for validation div
-              const formId = parentForm.id || '';
+              const formId = parentForm?.getAttribute('id') || '';
               const validatorId = 'dmxValidatorError' + (formId ? formId : '') + options.id;
               let validationDiv = document.getElementById(validatorId);
               
@@ -349,7 +375,7 @@ dmx.Component('mobile-input', {
       initialCountry: options.initial_country,
       separateDialCode: options.separate_dial_code,
       autoPlaceholder: options.auto_placeholder,
-      nationalMode: options.national_mode,
+      nationalMode: false,
       formatOnDisplay: options.format_on_display,
       useFullscreenPopup: options.use_full_screen_popup,
       showSelectedDialCode: options.show_selected_dial_code,
@@ -451,6 +477,7 @@ dmx.Component('mobile-input', {
     
     // Event handlers
     input.addEventListener('input', function(e) {
+      console.log('Input event triggered');
       // Filter out invalid characters - only allow digits (0-9)
       const validPhoneNumberChars = /^[0-9]*$/;
       if (!validPhoneNumberChars.test(input.value)) {
@@ -489,14 +516,30 @@ dmx.Component('mobile-input', {
       
       const isValid = self.iti.isValidNumber();
       const countryData = self.iti.getSelectedCountryData();
-      const nationalNumber = self.iti.getNumber(window.intlTelInputUtils.numberFormat.NATIONAL);
-      const internationalNumber = self.iti.getNumber(window.intlTelInputUtils.numberFormat.INTERNATIONAL);
+
+
+
+// const nationalNumber = self.iti.getNumber(window.intlTelInputUtils.numberFormat.NATIONAL);
+const rawInternationalNumber = self.iti.getNumber(window.intlTelInputUtils.numberFormat.E164);
+console.log('rawInternationalNumbe b4r:', rawInternationalNumber);
+
+const finalInternationalNumber = options.output_plus
+  ? rawInternationalNumber
+  : rawInternationalNumber.replace(/^\+/, '');
+
+  console.log('outputHasPlus:', options.output_plus);
+  console.log('rawInternationalNumber:', rawInternationalNumber);
+
+if (self.hiddenInput) {
+  self.hiddenInput.value = finalInternationalNumber;
+}
       
       // Update component data
       dmx.nextTick(function () {
-        self.set('phone_number', nationalNumber);
+        // self.set('phone_number', nationalNumber);
         self.set('country_code', countryData.dialCode);
-        self.set('full_number', internationalNumber);
+        self.set('full_number', finalInternationalNumber);
+        self.set('number_combined', countryData.dialCode + nationalNumber.replace(/\D/g, ''));
         self.set('is_valid', isValid);
       }, self);
       
@@ -504,7 +547,7 @@ dmx.Component('mobile-input', {
       let formId = '';
       let parent = input.closest('form');
       if (parent && parent.id) {
-        formId = parent.id;
+        formId = parent?.getAttribute('id') || '';
       }
       
       // Look for the DMX validator message div (try both with and without form ID)
@@ -596,7 +639,7 @@ dmx.Component('mobile-input', {
       let formId = '';
       let parent = input.closest('form');
       if (parent && parent.id) {
-        formId = parent.id;
+        formId = parent?.getAttribute('id') || '';
       }
       
       // Look for the DMX validator message div
@@ -614,7 +657,7 @@ dmx.Component('mobile-input', {
         // Add the is-invalid class to trigger DMX validation styling
         input.classList.add('is-invalid');
         
-        // Create validation div if it doesn't exist
+        
         if (!validationDiv) {
           validationDiv = document.createElement('div');
           validationDiv.id = 'dmxValidatorError' + (formId ? formId : '') + options.id;
@@ -625,15 +668,15 @@ dmx.Component('mobile-input', {
         validationDiv.textContent = "This field is required.";
         validationDiv.style.display = 'block';
       }
-      // Check if the value is provided but invalid
+      
       else if (input.value && !isValid) {
         const errorCode = self.iti.getValidationError();
         const errorMessage = errorMap[errorCode] || "Invalid phone number";
         
-        // Add the is-invalid class to trigger DMX validation styling
+        
         input.classList.add('is-invalid');
         
-        // Create validation div if it doesn't exist
+        
         if (!validationDiv) {
           validationDiv = document.createElement('div');
           validationDiv.id = 'dmxValidatorError' + (formId ? formId : '') + options.id;
@@ -645,11 +688,10 @@ dmx.Component('mobile-input', {
         validationDiv.style.display = 'block';
       } else {
         if (input.value.trim()) {
-          // Valid input with value - remove invalid class and add valid class
           input.classList.remove('is-invalid');
           input.classList.add('is-valid');
         } else {
-          // Empty input that's not required - remove both classes
+
           input.classList.remove('is-invalid');
           input.classList.remove('is-valid');
         }
@@ -680,24 +722,22 @@ dmx.Component('mobile-input', {
     
     this.initializeInput();
     
-    // Check if component is inside a Bootstrap modal
+
     const modal = this.$node.closest('.modal');
     if (modal) {      
-      // Add event listeners for modal show events to clear validation on open
       modal.addEventListener('show.bs.modal', function() {
         const input = self.$node.querySelector('input');
         if (input) {
-          // Clear validation state on modal open
+
           input.classList.remove('is-invalid');
           input.classList.remove('is-valid');
           input.classList.remove('is-invalid-field');
           input.classList.remove('is-valid-field');
           
-          // Try both with and without form ID for validation div
           let formId = '';
           let parent = input.closest('form');
           if (parent && parent.id) {
-            formId = parent.id;
+            formId = parent?.getAttribute('id') || '';
           }
           
           const validatorId = 'dmxValidatorError' + (formId ? formId : '') + self.props.id;
@@ -733,10 +773,16 @@ dmx.Component('mobile-input', {
     }
     
     if (!dmx.equal(this.props.value, props.value)) {
-      const input = this.$node.querySelector('input');
-      if (input && this.iti) {
-        this.iti.setNumber(this.props.value);
-      }
+  const input = this.$node.querySelector('input');
+  if (input && this.iti) {
+    let numberToSet = this.props.value || '';
+
+    if (props.value_has_plus === false && numberToSet && !numberToSet.startsWith('+')) {
+      numberToSet = '+' + numberToSet;
     }
+
+    this.iti.setNumber(numberToSet);
+  }
+}
   },
 });

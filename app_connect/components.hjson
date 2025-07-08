@@ -64,6 +64,22 @@
               "help": "Initial phone number value"
             },
             {
+              "name": "valueHasPlus",
+              "attribute": "value_has_plus",
+              "title": "Value Has Plus",
+              "type": "boolean",
+              "defaultValue": false,
+              "help": "If enabled, the bound value includes the '+' prefix (E.164 format). If disabled, '+' will be prepended automatically."
+            },
+            {
+              "name": "outputPlus",
+              "attribute": "output_plus",
+              "title": "Output Plus",
+              "type": "boolean",
+              "defaultValue": false,
+              "help": "If enabled, the output value will include the '+' prefix (E.164 format)."
+            },
+            {
               "name": "placeholder",
               "attribute": "placeholder",
               "title": "Placeholder",
@@ -237,14 +253,6 @@
           "group": "Advanced Settings",
           "variables": [
             {
-              "name": "utilsScript",
-              "attribute": "utilsScript",
-              "title": "Utils Script URL",
-              "type": "text",
-              "defaultValue": "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/js/utils.js",
-              "help": "URL for the intl-tel-input utils script"
-            },
-            {
               "name": "validationErrorMap",
               "attribute": "validation_error_map",
               "title": "Validation Error Map",
@@ -330,7 +338,6 @@
           "src": "js/dmx-mobile-input.js",
           "type": "js",
           "order": 2,
-          "defer": true
         }
       ]
     }
